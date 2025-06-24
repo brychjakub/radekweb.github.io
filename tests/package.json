@@ -1,0 +1,13 @@
+{
+  "name": "radekweb-tests",
+  "version": "1.0.0",
+  "description": "Tests for RadekWeb project",
+  "main": "index.test.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "jest": "^29.5.0",
+    "puppeteer": "^20.1.0"
+  }
+}
