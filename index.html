@@ -441,5 +441,52 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 				});
 			</script>
 
+			<!-- Background Slideshow Script -->
+			<script>
+				document.addEventListener('DOMContentLoaded', function() {
+					// Array of background images from the slideshow folder
+					// Add your images to the 'images/slideshow' folder and they will automatically be included in the slideshow
+					const backgroundImages = [
+						'images/slideshow/bg.jpg',
+						'images/slideshow/walpaper.jpg',
+					];
+
+					// Create a style element for the dynamic CSS
+					const styleElement = document.createElement('style');
+					document.head.appendChild(styleElement);
+
+					// Current image index
+					let currentImageIndex = 0;
+
+					// Function to change the background image
+					function changeBackgroundImage() {
+						// Get the next image
+						const nextImage = backgroundImages[currentImageIndex];
+
+						// Update the CSS rule for #bg:after
+						styleElement.textContent = `
+							#bg:after {
+								background-image: url('${nextImage}');
+								transition: background-image 1s ease-in-out;
+							}
+						`;
+
+						// Only increment the index if there's more than one image
+						if (backgroundImages.length > 1) {
+							// Increment the index or reset to 0 if we've reached the end
+							currentImageIndex = (currentImageIndex + 1) % backgroundImages.length;
+						}
+					}
+
+					// Set initial background image
+					changeBackgroundImage();
+
+					// Change the background image every 5 seconds, but only if there's more than one image
+					if (backgroundImages.length > 1) {
+						setInterval(changeBackgroundImage, 5000);
+					}
+				});
+			</script>
+
 	</body>
 </html>
