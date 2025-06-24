@@ -63,20 +63,68 @@
 								<span class="image main"><img src="images/pic03.jpg" alt="" /></span>
 								<p>Zde najdete ukázky mé tvorby:</p>
 
-								<h3>Svatby</h3>
-								<ul>
-									<li><a href="https://youtu.be/jU5ViugtMAU" target="_blank">Svatební video</a></li>
-								</ul>
+								<!-- Video Category Navigation -->
+								<div class="video-nav">
+									<ul>
+										<li><a href="#svatby-section" class="video-nav-link">Svatby</a></li>
+										<li><a href="#cestovani-section" class="video-nav-link">Cestování</a></li>
+										<li><a href="#teambuilding-section" class="video-nav-link">Teambuilding</a></li>
+									</ul>
+								</div>
 
-								<h3>Cestování</h3>
-								<ul>
-									<li><a href="https://youtu.be/2WJRTNpUPFQ" target="_blank">Cestovatelské video</a></li>
-								</ul>
+								<!-- Video Gallery Section -->
+								<div class="video-gallery">
+									<!-- Svatby Section -->
+									<div id="svatby-section" class="video-category">
+										<h3>Svatby</h3>
+										<div class="video-grid">
+											<!-- Video Item Template -->
+											<!-- 
+											To add a new video:
+											1. Copy the div with class "video-item" below
+											2. Replace the YouTube ID in data-youtube-id with your new video ID
+											3. Update the title attribute with your video title
+											-->
+											<div class="video-item" data-youtube-id="jU5ViugtMAU" title="Svatební video">
+												<a href="https://youtu.be/jU5ViugtMAU" target="_blank" class="video-thumbnail">
+													<img src="https://img.youtube.com/vi/jU5ViugtMAU/mqdefault.jpg" alt="Svatební video" />
+													<div class="play-button"></div>
+												</a>
+												<div class="video-title">Svatební video</div>
+											</div>
+											<!-- End Video Item -->
+										</div>
+									</div>
 
-								<h3>Teambuilding</h3>
-								<ul>
-									<li><a href="https://youtu.be/gbVdI0YoXBQ" target="_blank">Teambuilding video</a></li>
-								</ul>
+									<!-- Cestování Section -->
+									<div id="cestovani-section" class="video-category">
+										<h3>Cestování</h3>
+										<div class="video-grid">
+											<div class="video-item" data-youtube-id="2WJRTNpUPFQ" title="Cestovatelské video">
+												<a href="https://youtu.be/2WJRTNpUPFQ" target="_blank" class="video-thumbnail">
+													<img src="https://img.youtube.com/vi/2WJRTNpUPFQ/mqdefault.jpg" alt="Cestovatelské video" />
+													<div class="play-button"></div>
+												</a>
+												<div class="video-title">Cestovatelské video</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Teambuilding Section -->
+									<div id="teambuilding-section" class="video-category">
+										<h3>&nbsp;Teambuilding</h3>
+										<div class="video-grid">
+											<div class="video-item" data-youtube-id="gbVdI0YoXBQ" title="Teambuilding video">
+												<a href="https://youtu.be/gbVdI0YoXBQ" target="_blank" class="video-thumbnail">
+													<img src="https://img.youtube.com/vi/gbVdI0YoXBQ/mqdefault.jpg" alt="Teambuilding video" />
+													<div class="play-button"></div>
+												</a>
+												<div class="video-title">Teambuilding video</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- End Video Gallery Section -->
 							</article>
 
 						<!-- Contact -->
@@ -367,6 +415,31 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+
+			<!-- Smooth Scrolling Script -->
+			<script>
+				// Smooth scrolling for video navigation
+				document.addEventListener('DOMContentLoaded', function() {
+					const videoNavLinks = document.querySelectorAll('.video-nav-link');
+
+					videoNavLinks.forEach(link => {
+						link.addEventListener('click', function(e) {
+							e.preventDefault();
+
+							const targetId = this.getAttribute('href');
+							const targetElement = document.querySelector(targetId);
+
+							if (targetElement) {
+								// Smooth scroll to target
+								targetElement.scrollIntoView({
+									behavior: 'smooth',
+									block: 'start'
+								});
+							}
+						});
+					});
+				});
+			</script>
 
 	</body>
 </html>
