@@ -437,22 +437,32 @@
 					data: formData,
 					processData: false,
 					contentType: false,
-					dataType: 'json',
+					// Remove dataType: 'json' to avoid CORS issues
+					crossDomain: true,
 					success: function(response) {
+						// Try to parse response as JSON, but don't require it
+						var result;
+						try {
+							result = typeof response === 'string' ? JSON.parse(response) : response;
+						} catch (e) {
+							// If parsing fails, assume success for Web3Forms
+							result = { success: true };
+						}
+
 						// Check if this is a Web3Forms response
-						if (response && typeof response.success !== 'undefined') {
-							if (response.success) {
+						if (result && typeof result.success !== 'undefined') {
+							if (result.success) {
 								// Web3Forms success
 								$form.prepend('<div class="form-status success" style="background: #4CAF50; color: white; padding: 10px; margin-bottom: 20px; border-radius: 4px;">Zpráva byla úspěšně odeslána! Děkuji za kontakt.</div>');
 								// Reset form
 								$form[0].reset();
 							} else {
 								// Web3Forms error
-								var errorMsg = response.message || 'Nastala chyba při odesílání zprávy.';
+								var errorMsg = result.message || 'Nastala chyba při odesílání zprávy.';
 								$form.prepend('<div class="form-status error" style="background: #f44336; color: white; padding: 10px; margin-bottom: 20px; border-radius: 4px;">' + errorMsg + '</div>');
 							}
 						} else {
-							// Formspree or other service success
+							// Formspree or other service success, or unparseable response (assume success)
 							$form.prepend('<div class="form-status success" style="background: #4CAF50; color: white; padding: 10px; margin-bottom: 20px; border-radius: 4px;">Zpráva byla úspěšně odeslána! Děkuji za kontakt.</div>');
 							// Reset form
 							$form[0].reset();
@@ -461,17 +471,31 @@
 					error: function(xhr, status, error) {
 						var errorMessage = 'Nastala chyba při odesílání zprávy. Zkuste to prosím znovu.';
 
-						// Try to parse error response for better error messages
-						if (xhr.responseJSON && xhr.responseJSON.message) {
-							errorMessage = xhr.responseJSON.message;
-						} else if (xhr.responseText) {
-							try {
-								var errorData = JSON.parse(xhr.responseText);
-								if (errorData.message) {
-									errorMessage = errorData.message;
+						// Handle specific error cases
+						if (xhr.status === 0) {
+							errorMessage = 'Problém s připojením k serveru. Zkontrolujte internetové připojení a zkuste to znovu.';
+						} else if (xhr.status === 301) {
+							errorMessage = 'Server přesměroval požadavek. Zkuste obnovit stránku a odeslat znovu.';
+						} else if (xhr.status === 422) {
+							errorMessage = 'Neplatný Access Key nebo chybná data formuláře. Zkontrolujte konfiguraci.';
+						} else if (xhr.status === 429) {
+							errorMessage = 'Příliš mnoho požadavků. Počkejte chvíli a zkuste to znovu.';
+						} else {
+							// Try to parse error response for better error messages
+							if (xhr.responseJSON && xhr.responseJSON.message) {
+								errorMessage = xhr.responseJSON.message;
+							} else if (xhr.responseText) {
+								try {
+									var errorData = JSON.parse(xhr.responseText);
+									if (errorData.message) {
+										errorMessage = errorData.message;
+									}
+								} catch (e) {
+									// Keep default error message with status code
+									if (xhr.status > 0) {
+										errorMessage = 'Chyba ' + xhr.status + ': ' + (xhr.statusText || 'Neznámá chyba');
+									}
 								}
-							} catch (e) {
-								// Keep default error message
 							}
 						}
 
