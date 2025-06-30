@@ -398,4 +398,94 @@
 						$main._show(location.hash.substr(1), true);
 					});
 
+		// Contact form handling.
+			$('#contact form').on('submit', function(e) {
+				var $form = $(this);
+				var $submitBtn = $form.find('input[type="submit"]');
+				var originalBtnText = $submitBtn.val();
+				var formAction = $form.attr('action');
+
+				// Check if this is a mailto: URL
+				if (formAction && formAction.toLowerCase().startsWith('mailto:')) {
+					// For mailto URLs, use native form submission
+					// Show brief loading state
+					$submitBtn.val('Otevírám email...').prop('disabled', true);
+
+					// Restore button after a short delay
+					setTimeout(function() {
+						$submitBtn.val(originalBtnText).prop('disabled', false);
+					}, 2000);
+
+					// Allow native form submission for mailto
+					return true;
+				}
+
+				// For non-mailto URLs (like Web3Forms, Formspree), use AJAX
+				// Show loading state
+				$submitBtn.val('Odesílám...').prop('disabled', true);
+
+				// Remove any existing status messages
+				$form.find('.form-status').remove();
+
+				// Create FormData object
+				var formData = new FormData(this);
+
+				// Submit form via AJAX
+				$.ajax({
+					url: formAction,
+					method: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					dataType: 'json',
+					success: function(response) {
+						// Check if this is a Web3Forms response
+						if (response && typeof response.success !== 'undefined') {
+							if (response.success) {
+								// Web3Forms success
+								$form.prepend('<div class="form-status success" style="background: #4CAF50; color: white; padding: 10px; margin-bottom: 20px; border-radius: 4px;">Zpráva byla úspěšně odeslána! Děkuji za kontakt.</div>');
+								// Reset form
+								$form[0].reset();
+							} else {
+								// Web3Forms error
+								var errorMsg = response.message || 'Nastala chyba při odesílání zprávy.';
+								$form.prepend('<div class="form-status error" style="background: #f44336; color: white; padding: 10px; margin-bottom: 20px; border-radius: 4px;">' + errorMsg + '</div>');
+							}
+						} else {
+							// Formspree or other service success
+							$form.prepend('<div class="form-status success" style="background: #4CAF50; color: white; padding: 10px; margin-bottom: 20px; border-radius: 4px;">Zpráva byla úspěšně odeslána! Děkuji za kontakt.</div>');
+							// Reset form
+							$form[0].reset();
+						}
+					},
+					error: function(xhr, status, error) {
+						var errorMessage = 'Nastala chyba při odesílání zprávy. Zkuste to prosím znovu.';
+
+						// Try to parse error response for better error messages
+						if (xhr.responseJSON && xhr.responseJSON.message) {
+							errorMessage = xhr.responseJSON.message;
+						} else if (xhr.responseText) {
+							try {
+								var errorData = JSON.parse(xhr.responseText);
+								if (errorData.message) {
+									errorMessage = errorData.message;
+								}
+							} catch (e) {
+								// Keep default error message
+							}
+						}
+
+						$form.prepend('<div class="form-status error" style="background: #f44336; color: white; padding: 10px; margin-bottom: 20px; border-radius: 4px;">' + errorMessage + '</div>');
+					},
+					complete: function() {
+						// Restore button state
+						$submitBtn.val(originalBtnText).prop('disabled', false);
+					}
+				});
+
+				// Prevent default form submission for AJAX
+				e.preventDefault();
+				return false;
+			});
+
 })(jQuery);

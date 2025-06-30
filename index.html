@@ -130,19 +130,41 @@
 						<!-- Contact -->
 							<article id="contact">
 								<h2 class="major">Kontakt</h2>
-								<form method="post" action="#">
+								<!-- 
+								INSTRUKCE PRO NASTAVENÍ FORMULÁŘE:
+
+								MOŽNOST 1: Web3Forms (DOPORUČENO - NEOMEZENÉ ZPRÁVY ZDARMA)
+								1. Jděte na https://web3forms.com a vytvořte si účet
+								2. Získejte svůj Access Key
+								3. Nahraďte "YOUR_WEB3FORMS_ACCESS_KEY" níže svým skutečným klíčem
+
+								MOŽNOST 2: Formspree (50 zpráv/měsíc zdarma)
+								1. Jděte na https://formspree.io a vytvořte si účet
+								2. Vytvořte nový formulář a získejte svůj endpoint
+								3. Změňte action na "https://formspree.io/f/YOUR_FORMSPREE_ENDPOINT"
+
+								MOŽNOST 3: Mailto (otevře emailového klienta)
+								Změňte action na "mailto:vas@email.cz"
+								-->
+								<form method="post" action="https://api.web3forms.com/submit">
+									<!-- Web3Forms required fields -->
+									<input type="hidden" name="access_key" value="0d78da3e-e0f0-4967-bd9a-156ef03a9b3c">
+									<input type="hidden" name="subject" value="Nová zpráva z RadekWeb kontaktního formuláře">
+									<input type="hidden" name="from_name" value="RadekWeb Kontakt">
+									<input type="hidden" name="redirect" value="https://web3forms.com/success">
+
 									<div class="fields">
 										<div class="field half">
 											<label for="name">Jméno</label>
-											<input type="text" name="name" id="name" />
+											<input type="text" name="name" id="name" required />
 										</div>
 										<div class="field half">
 											<label for="email">Email</label>
-											<input type="text" name="email" id="email" />
+											<input type="email" name="email" id="email" required />
 										</div>
 										<div class="field">
 											<label for="message">Zpráva</label>
-											<textarea name="message" id="message" rows="4"></textarea>
+											<textarea name="message" id="message" rows="4" required></textarea>
 										</div>
 									</div>
 									<ul class="actions">
@@ -151,8 +173,7 @@
 									</ul>
 								</form>
 								<ul class="icons">
-									<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+<!--									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>-->
 									</ul>
 							</article>
 
