@@ -405,6 +405,50 @@
 				var originalBtnText = $submitBtn.val();
 				var formAction = $form.attr('action');
 
+				// Security checks
+				// 1. Honeypot field check - if filled, it's likely a bot
+				var honeypotValue = $form.find('input[name="honeypot"]').val();
+				if (honeypotValue && honeypotValue.trim() !== '') {
+					// Silent fail for bots - don't show error message
+					console.log('Bot detected via honeypot');
+					e.preventDefault();
+					return false;
+				}
+
+				// 2. Rate limiting - prevent rapid submissions
+				var lastSubmission = localStorage.getItem('lastFormSubmission');
+				var currentTime = new Date().getTime();
+				var minInterval = 30000; // 30 seconds minimum between submissions
+
+				if (lastSubmission && (currentTime - parseInt(lastSubmission)) < minInterval) {
+					$form.find('.form-status').remove();
+					$form.prepend('<div class="form-status error" style="background: #f44336; color: white; padding: 10px; margin-bottom: 20px; border-radius: 4px;">Počkejte prosím alespoň 30 sekund před dalším odesláním.</div>');
+					e.preventDefault();
+					return false;
+				}
+
+				// 3. Basic validation enhancement
+				var name = $form.find('input[name="name"]').val().trim();
+				var email = $form.find('input[name="email"]').val().trim();
+				var message = $form.find('textarea[name="message"]').val().trim();
+
+				if (name.length < 2) {
+					$form.find('.form-status').remove();
+					$form.prepend('<div class="form-status error" style="background: #f44336; color: white; padding: 10px; margin-bottom: 20px; border-radius: 4px;">Jméno musí mít alespoň 2 znaky.</div>');
+					e.preventDefault();
+					return false;
+				}
+
+				if (message.length < 10) {
+					$form.find('.form-status').remove();
+					$form.prepend('<div class="form-status error" style="background: #f44336; color: white; padding: 10px; margin-bottom: 20px; border-radius: 4px;">Zpráva musí mít alespoň 10 znaků.</div>');
+					e.preventDefault();
+					return false;
+				}
+
+				// Store submission time for rate limiting
+				localStorage.setItem('lastFormSubmission', currentTime.toString());
+
 				// Check if this is a mailto: URL
 				if (formAction && formAction.toLowerCase().startsWith('mailto:')) {
 					// For mailto URLs, use native form submission

@@ -6,6 +6,15 @@
 -->
 <html>
 	<head>
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-F62S0BW9H3"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'G-F62S0BW9H3');
+		</script>
 		<title>Dimension by HTML5 UP</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -146,11 +155,16 @@
 								MOŽNOST 3: Mailto (otevře emailového klienta)
 								Změňte action na "mailto:vas@email.cz"
 								-->
-								<form method="post" action="https://api.web3forms.com/submit">
+								<form method="post" action="https://api.web3forms.com/submit" id="contact-form">
 									<!-- Web3Forms required fields -->
 									<input type="hidden" name="access_key" value="0d78da3e-e0f0-4967-bd9a-156ef03a9b3c">
 									<input type="hidden" name="subject" value="Nová zpráva z RadekWeb kontaktního formuláře">
 									<input type="hidden" name="from_name" value="RadekWeb Kontakt">
+
+									<!-- Honeypot field for bot detection (hidden from users) -->
+									<input type="text" name="honeypot" style="display: none;" tabindex="-1" autocomplete="off">
+
+									<!-- Rate limiting protection - redirect field removed to fix CORS issues -->
 
 									<div class="fields">
 										<div class="field half">
@@ -163,11 +177,11 @@
 										</div>
 										<div class="field">
 											<label for="message">Zpráva</label>
-											<textarea name="message" id="message" rows="4" required></textarea>
+											<textarea name="message" id="message" rows="4" required minlength="10"></textarea>
 										</div>
 									</div>
 									<ul class="actions">
-										<li><input type="submit" value="Odeslat zprávu" class="primary" /></li>
+										<li><input type="submit" value="Odeslat zprávu" class="primary" id="submit-btn" /></li>
 										<li><input type="reset" value="Vymazat" /></li>
 									</ul>
 								</form>
