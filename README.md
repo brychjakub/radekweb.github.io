@@ -31,11 +31,13 @@ Stránka používá **plně dynamickou detekci**
 
 ### Automatická aktualizace seznamu obrázků
 
-Pro aktualizaci JavaScript souborů se seznamy obrázků spusť:
+Pro aktualizaci JavaScript souborů se seznamy obrázků spusť lokálně v terminálu:
 
 ```bash
 php generate-slideshow-list.php
 ```
+
+nebo změň názvy v .js souborech (intro-images.js, portfolio-images.js, work-images.js nebo slideshow-images.js)
 
 **Tento script automaticky:**
 - Prohledá všechny složky s obrázky (slideshow, introImage, portfolioImage, workImage)
