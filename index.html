@@ -42,7 +42,7 @@
 					<ul>
 						<li><a href="#intro">O mně</a></li>
 						<li><a href="#work">Co dělám a proč</a></li>
-						<li><a href="#about">Portfolio</a></li>
+						<li><a href="#portfolio">Portfolio</a></li>
 						<li><a href="#contact">Kontakt</a></li>
 					</ul>
 				</nav>
@@ -65,16 +65,16 @@
 				<!-- Work -->
 				<article id="work">
 					<h2 class="major">Co dělám a proč</h2>
-					<span class="image main"><img src="images/workImage/pic.jpg" alt="" /></span>
+					<span class="image main"><img src="images/workImage/hello.jpg" alt="" /></span>
 					<p>Natáčím a stříhám videa všeho druhu od <b>svateb, teambuildingů a narozeninových oslav</b> až po <b>reklamy, reality</b> a samozřejmě moje oblíbená videa <b>o přírodě a cestování.</b></p>
 					<p>Hlavní důvod, proč jsem se do toho pustil je přirozeně to, že mě to <u>baví</u>. Snažit se zachytit emoci a přenést ji do videa, poznat nové lidi, a samozřejmě kreativní stránka celého procesu.</p>
 					<p>Nutno ovšem podotknout, že se asi neřadím mezi kameramany, kteří "jdou přes mrtvoly", aby získali nejlepší možný záběr. Spíš se snažím vcítit se do situace a podle toho přizpůsobit natáčení. Jako příklad bych uvedl třeba svatby, kde se vždy snažím být spíš nenápadný, protože normální lidí jsou z kamer často nervózní. Navíc podle mě nejlepší záběry vznikají, když o tom natáčený nebo natáčená vůbec neví. </p>
 				</article>
 
-				<!-- About -->
-				<article id="about">
+				<!-- portfolio -->
+				<article id="portfolio">
 					<h2 class="major">Portfolio</h2>
-					<span class="image main"><img src="images/portfolioImage/image.jpg" alt="" /></span>
+					<span class="image main"><img src="images/portfolioImage/test.jpg" alt="" /></span>
 					<p>Zde najdete ukázky mé tvorby:</p>
 
 					<!-- Video Category Navigation -->
@@ -224,8 +224,11 @@
 				});
 			</script>
 
-			<!-- Include the slideshow images list -->
+			<!-- Include all generated image lists -->
 			<script src="slideshow-images.js"></script>
+			<script src="intro-images.js"></script>
+			<script src="portfolio-images.js"></script>
+			<script src="work-images.js"></script>
 
 			<!-- Background Slideshow Script -->
 			<script>
@@ -242,35 +245,86 @@
 
 					// Function to start the slideshow once all images are preloaded
 					function startSlideshow() {
-						// Create a style element for the dynamic CSS
+						// Current image index
+						let currentImageIndex = 0;
+						let isTransitioning = false;
+
+						// Create the transition element for smooth fades
+						const bgElement = document.getElementById('bg');
+						const transitionElement = document.createElement('div');
+						transitionElement.id = 'bg-transition';
+						transitionElement.style.cssText = `
+							position: absolute;
+							top: 0;
+							left: 0;
+							width: 100%;
+							height: 100%;
+							opacity: 0;
+							transition: opacity 1.5s ease-in-out;
+							background-position: center;
+							background-size: cover;
+							background-repeat: no-repeat;
+							z-index: 2;
+							transform: scale(1.125);
+						`;
+						bgElement.appendChild(transitionElement);
+
+						// Create a style element for the main background
 						const styleElement = document.createElement('style');
 						document.head.appendChild(styleElement);
 
-						// Current image index
-						let currentImageIndex = 0;
-
-						// Function to change the background image
+						// Function to change the background image with smooth fade
 						function changeBackgroundImage() {
+							if (isTransitioning || slideshowImages.length <= 1) return;
+
+							isTransitioning = true;
+
 							// Get the next image
 							const nextImage = slideshowImages[currentImageIndex];
 
-							// Update the CSS rule for #bg:after
-							styleElement.textContent = `
-								#bg:after {
-									background-image: url('${nextImage}');
-									transition: background-image 1s ease-in-out;
-								}
-							`;
+							// Set the next image on the transition element
+							transitionElement.style.backgroundImage = `url('${nextImage}')`;
 
-							// Only increment the index if there's more than one image
-							if (slideshowImages.length > 1) {
-								// Increment the index or reset to 0 if we've reached the end
-								currentImageIndex = (currentImageIndex + 1) % slideshowImages.length;
-							}
+							// Start the fade transition
+							requestAnimationFrame(() => {
+								// Fade in the new image
+								transitionElement.style.opacity = '1';
+
+								// After transition completes, swap the images
+								setTimeout(() => {
+									// Update the main background with the new image
+									styleElement.textContent = `
+										#bg:after {
+											background-image: url('${nextImage}') !important;
+										}
+									`;
+
+									// Reset transition element
+									transitionElement.style.opacity = '0';
+									transitionElement.style.backgroundImage = '';
+
+									isTransitioning = false;
+
+									// Increment the index for next image
+									currentImageIndex = (currentImageIndex + 1) % slideshowImages.length;
+								}, 1500); // Wait for transition to complete
+							});
 						}
 
 						// Set initial background image
-						changeBackgroundImage();
+						if (slideshowImages.length > 0) {
+							const initialImage = slideshowImages[currentImageIndex];
+							styleElement.textContent = `
+								#bg:after {
+									background-image: url('${initialImage}') !important;
+								}
+							`;
+
+							// Increment index for next change
+							if (slideshowImages.length > 1) {
+								currentImageIndex = (currentImageIndex + 1) % slideshowImages.length;
+							}
+						}
 
 						// Change the background image every 5 seconds, but only if there's more than one image
 						if (slideshowImages.length > 1) {
@@ -309,6 +363,47 @@
 						img.src = src;
 						preloadedImages.push(img);
 					});
+				});
+			</script>
+
+			<!-- Dynamic Image Loading Script -->
+			<script>
+				document.addEventListener('DOMContentLoaded', function() {
+					// Function to load the first available image from an array into a target element
+					function loadDynamicImage(imageArray, targetSelector, fallbackSrc) {
+						const targetElement = document.querySelector(targetSelector);
+						if (!targetElement) return;
+
+						// If no images in array, use fallback or keep existing
+						if (!imageArray || imageArray.length === 0) {
+							console.log(`No images found for ${targetSelector}, keeping existing image`);
+							return;
+						}
+
+						// Use the first image from the array
+						const imageSrc = imageArray[0];
+
+						// Create a new image to test if it loads
+						const testImg = new Image();
+
+						testImg.onload = function() {
+							// Image loaded successfully, update the target
+							targetElement.src = imageSrc;
+							console.log(`Successfully loaded dynamic image for ${targetSelector}: ${imageSrc}`);
+						};
+
+						testImg.onerror = function() {
+							// Image failed to load, keep existing or use fallback
+							console.error(`Failed to load dynamic image for ${targetSelector}: ${imageSrc}`);
+							if (fallbackSrc) {
+								targetElement.src = fallbackSrc;
+							}
+						};
+
+						// Start loading the image
+						testImg.src = imageSrc;
+					}
+
 				});
 			</script>
 
