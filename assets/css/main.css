@@ -1860,13 +1860,14 @@ input, select, textarea {
 		right: 0;
 		z-index: 10000;
 		transform: translateY(100%);
-		transition: transform 0.4s ease-in-out;
+		transition: transform 0.6s ease-in-out;
 		pointer-events: none;
 	}
 
 	.cookie-consent-popup.show {
 		transform: translateY(0);
 		pointer-events: auto;
+		transition: transform 0.6s ease-in-out;
 	}
 
 	.cookie-consent-content {
