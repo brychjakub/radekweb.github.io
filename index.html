@@ -397,7 +397,6 @@
 						testImg.onload = function() {
 							// Image loaded successfully, update the target
 							targetElement.src = imageSrc;
-							console.log(`Successfully loaded dynamic image for ${targetSelector}: ${imageSrc}`);
 						};
 
 						testImg.onerror = function() {
@@ -446,35 +445,59 @@
 				</div>
 			</div>
 
-			<!-- Cookie Consent Script -->
-			<script>
-				document.addEventListener('DOMContentLoaded', function() {
-					const popup = document.getElementById('cookie-consent-popup');
-					const acceptBtn = document.getElementById('cookie-accept');
-					const declineBtn = document.getElementById('cookie-decline');
+ 		<!-- Cookie Consent Script -->
+ 		<script>
+ 			document.addEventListener('DOMContentLoaded', function() {
+ 				const popup = document.getElementById('cookie-consent-popup');
+ 				const acceptBtn = document.getElementById('cookie-accept');
+ 				const declineBtn = document.getElementById('cookie-decline');
 
-					// Check if user has already made a choice
-					const consent = localStorage.getItem('analytics-consent');
+ 				// Check if user has already made a choice
+ 				const consent = localStorage.getItem('analytics-consent');
 
-					// Show popup if no choice has been made
-					// if (!consent) {
-						popup.style.display = 'flex';
-					// }
+ 				// Hide popup initially if consent already exists
+ 				if (consent) {
+ 					popup.style.display = 'none';
+ 				}
 
-					// Handle accept button
-					acceptBtn.addEventListener('click', function() {
-						localStorage.setItem('analytics-consent', 'accepted');
-						popup.style.display = 'none';
-						initGoogleAnalytics();
-					});
+ 				// Function to show popup with slide-up animation
+ 				function showPopup() {
+ 					popup.style.display = 'flex';
+ 					// Force reflow to ensure initial transform state is applied
+ 					popup.offsetHeight;
+ 					// Add class to trigger slide-up animation
+ 					popup.classList.add('show');
+ 				}
 
-					// Handle decline button
-					declineBtn.addEventListener('click', function() {
-						localStorage.setItem('analytics-consent', 'declined');
-						popup.style.display = 'none';
-					});
-				});
-			</script>
+ 				// Function to hide popup with slide-down animation
+ 				function hidePopup() {
+ 					// Remove class to trigger slide-down animation
+ 					popup.classList.remove('show');
+ 					// Wait for animation to complete before hiding
+ 					setTimeout(() => {
+ 						popup.style.display = 'none';
+ 					}, 400); // Match the CSS transition duration
+ 				}
+
+ 				// Show popup if no choice has been made
+ 				if (!consent) {
+ 					showPopup();
+ 				}
+
+ 				// Handle accept button
+ 				acceptBtn.addEventListener('click', function() {
+ 					localStorage.setItem('analytics-consent', 'accepted');
+ 					hidePopup();
+ 					initGoogleAnalytics();
+ 				});
+
+ 				// Handle decline button
+ 				declineBtn.addEventListener('click', function() {
+ 					localStorage.setItem('analytics-consent', 'declined');
+ 					hidePopup();
+ 				});
+ 			});
+ 		</script>
 
 	</body>
 </html>

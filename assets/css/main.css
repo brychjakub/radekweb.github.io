@@ -1875,7 +1875,7 @@ input, select, textarea {
 		pointer-events: none;
 	}
 
-	.cookie-consent-popup[style*="flex"] {
+	.cookie-consent-popup.show {
 		transform: translateY(0);
 		pointer-events: auto;
 	}
