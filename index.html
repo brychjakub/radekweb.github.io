@@ -136,32 +136,16 @@
 				<!-- Contact -->
 				<article id="contact">
 					<h2 class="major">Kontakt</h2>
-								<!--
-								INSTRUKCE PRO NASTAVENÍ FORMULÁŘE:
+						<form method="post" action="https://api.web3forms.com/submit" id="contact-form">
+							<!-- Web3Forms required fields -->
+							<input type="hidden" name="access_key" value="0d78da3e-e0f0-4967-bd9a-156ef03a9b3c">
+							<input type="hidden" name="subject" value="Nová zpráva z RadekWeb kontaktního formuláře">
+							<input type="hidden" name="from_name" value="RadekWeb Kontakt">
 
-								MOŽNOST 1: Web3Forms (DOPORUČENO - NEOMEZENÉ ZPRÁVY ZDARMA)
-								1. Jděte na https://web3forms.com a vytvořte si účet
-								2. Získejte svůj Access Key
-								3. Nahraďte "YOUR_WEB3FORMS_ACCESS_KEY" níže svým skutečným klíčem
+							<!-- Honeypot field for bot detection (hidden from users) -->
+							<input type="text" name="honeypot" style="display: none;" tabindex="-1" autocomplete="off">
 
-								MOŽNOST 2: Formspree (50 zpráv/měsíc zdarma)
-								1. Jděte na https://formspree.io a vytvořte si účet
-								2. Vytvořte nový formulář a získejte svůj endpoint
-								3. Změňte action na "https://formspree.io/f/YOUR_FORMSPREE_ENDPOINT"
-
-								MOŽNOST 3: Mailto (otevře emailového klienta)
-								Změňte action na "mailto:vas@email.cz"
-								-->
-								<form method="post" action="https://api.web3forms.com/submit" id="contact-form">
-									<!-- Web3Forms required fields -->
-									<input type="hidden" name="access_key" value="0d78da3e-e0f0-4967-bd9a-156ef03a9b3c">
-									<input type="hidden" name="subject" value="Nová zpráva z RadekWeb kontaktního formuláře">
-									<input type="hidden" name="from_name" value="RadekWeb Kontakt">
-
-									<!-- Honeypot field for bot detection (hidden from users) -->
-									<input type="text" name="honeypot" style="display: none;" tabindex="-1" autocomplete="off">
-
-									<!-- Rate limiting protection - redirect field removed to fix CORS issues -->
+							<!-- Rate limiting protection - redirect field removed to fix CORS issues -->
 
 						<div class="fields">
 							<div class="field half">
