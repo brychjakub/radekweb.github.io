@@ -152,7 +152,6 @@ input, select, textarea {
 		-webkit-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		-ms-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
 		transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
-		border-bottom: dotted 1px rgba(255, 255, 255, 0.5);
 		text-decoration: none;
 		color: inherit;
 	}
@@ -1678,19 +1677,9 @@ input, select, textarea {
 
 	.video-nav li {
 		margin: 0;
-		padding: 0;
-	}
-
-	.video-nav li:not(:last-child) {
-		margin-right: 0;
-		padding-right: 1.5rem;
-		border-right: 1px solid rgba(255, 255, 255, 0.3);
-		margin-left: 0;
 		padding-left: 1.5rem;
-	}
-
-	.video-nav li:first-child {
-		padding-left: 0;
+		padding-right: 1.5rem;
+		text-align: center;
 	}
 
 	.video-nav-link {
