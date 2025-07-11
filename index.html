@@ -6,14 +6,35 @@
 -->
 <html>
 	<head>
-		<!-- Google tag (gtag.js) -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=G-F62S0BW9H3"></script>
+		<!-- Google tag (gtag.js) - Only loaded after consent -->
 		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-			gtag('js', new Date());
+			// Google Analytics initialization function
+			function initGoogleAnalytics() {
+				// Load Google Analytics script
+				const script = document.createElement('script');
+				script.async = true;
+				script.src = 'https://www.googletagmanager.com/gtag/js?id=G-F62S0BW9H3';
+				document.head.appendChild(script);
 
-			gtag('config', 'G-F62S0BW9H3');
+				// Initialize gtag
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+				gtag('js', new Date());
+				gtag('config', 'G-F62S0BW9H3');
+
+				console.log('Google Analytics initialized');
+			}
+
+			// Check if user has already given consent
+			function checkAnalyticsConsent() {
+				const consent = localStorage.getItem('analytics-consent');
+				if (consent === 'accepted') {
+					initGoogleAnalytics();
+				}
+			}
+
+			// Initialize analytics if consent was previously given
+			checkAnalyticsConsent();
 		</script>
 		<title>Dimension by HTML5 UP</title>
 		<meta charset="utf-8" />
@@ -408,6 +429,50 @@
 					if (typeof portfolioImages !== 'undefined') {
 						loadDynamicImage(portfolioImages, '#portfolio .image.main img', 'images/pic03.jpg');
 					}
+				});
+			</script>
+
+			<!-- Cookie Consent Popup -->
+			<div id="cookie-consent-popup" class="cookie-consent-popup" style="display: none;">
+				<div class="cookie-consent-content">
+					<div class="cookie-consent-text">
+						<h3>Souhlas se sbíráním dat</h3>
+						<p>Tato stránka používá Google Analytics pro analýzu návštěvnosti. Souhlasíte se sbíráním anonymních dat o vaší návštěvě?</p>
+					</div>
+					<div class="cookie-consent-buttons">
+						<button id="cookie-accept" class="cookie-btn cookie-accept">Souhlasím</button>
+						<button id="cookie-decline" class="cookie-btn cookie-decline">Nesouhlasím</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Cookie Consent Script -->
+			<script>
+				document.addEventListener('DOMContentLoaded', function() {
+					const popup = document.getElementById('cookie-consent-popup');
+					const acceptBtn = document.getElementById('cookie-accept');
+					const declineBtn = document.getElementById('cookie-decline');
+
+					// Check if user has already made a choice
+					const consent = localStorage.getItem('analytics-consent');
+
+					// Show popup if no choice has been made
+					// if (!consent) {
+						popup.style.display = 'flex';
+					// }
+
+					// Handle accept button
+					acceptBtn.addEventListener('click', function() {
+						localStorage.setItem('analytics-consent', 'accepted');
+						popup.style.display = 'none';
+						initGoogleAnalytics();
+					});
+
+					// Handle decline button
+					declineBtn.addEventListener('click', function() {
+						localStorage.setItem('analytics-consent', 'declined');
+						popup.style.display = 'none';
+					});
 				});
 			</script>
 
