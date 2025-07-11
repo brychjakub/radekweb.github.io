@@ -74,7 +74,7 @@
 				<!-- portfolio -->
 				<article id="portfolio">
 					<h2 class="major">Portfolio</h2>
-					<span class="image main"><img src="images/portfolioImage/test.jpg" alt="" /></span>
+					<span class="image main"><img src="images/portfolioImage/jipp.jpg" alt="" /></span>
 					<p>Zde najdete ukázky mé tvorby:</p>
 
 					<!-- Video Category Navigation -->
@@ -249,31 +249,13 @@
 						let currentImageIndex = 0;
 						let isTransitioning = false;
 
-						// Create the transition element for smooth fades
-						const bgElement = document.getElementById('bg');
-						const transitionElement = document.createElement('div');
-						transitionElement.id = 'bg-transition';
-						transitionElement.style.cssText = `
-							position: absolute;
-							top: 0;
-							left: 0;
-							width: 100%;
-							height: 100%;
-							opacity: 0;
-							transition: opacity 1.5s ease-in-out;
-							background-position: center;
-							background-size: cover;
-							background-repeat: no-repeat;
-							z-index: 2;
-							transform: scale(1.125);
-						`;
-						bgElement.appendChild(transitionElement);
+						// No longer need transition element - using CSS opacity transitions directly
 
 						// Create a style element for the main background
 						const styleElement = document.createElement('style');
 						document.head.appendChild(styleElement);
 
-						// Function to change the background image with smooth fade
+						// Function to change the background image with fade out then fade in
 						function changeBackgroundImage() {
 							if (isTransitioning || slideshowImages.length <= 1) return;
 
@@ -282,33 +264,55 @@
 							// Get the next image
 							const nextImage = slideshowImages[currentImageIndex];
 
-							// Set the next image on the transition element
-							transitionElement.style.backgroundImage = `url('${nextImage}')`;
+							// Phase 1: Fade out current image completely
+							styleElement.textContent = `
+								#bg:after {
+									background-image: url('${slideshowImages[(currentImageIndex - 1 + slideshowImages.length) % slideshowImages.length]}') !important;
+									opacity: 0 !important;
+									transition: opacity 1.5s ease-in-out !important;
+								}
+							`;
 
-							// Start the fade transition
-							requestAnimationFrame(() => {
-								// Fade in the new image
-								transitionElement.style.opacity = '1';
+							// Phase 2: After fade out completes, set new image and fade it in
+							setTimeout(() => {
+								// Set the new image with opacity 0
+								styleElement.textContent = `
+									#bg:after {
+										background-image: url('${nextImage}') !important;
+										opacity: 0 !important;
+										transition: opacity 1.5s ease-in-out !important;
+									}
+								`;
 
-								// After transition completes, swap the images
-								setTimeout(() => {
-									// Update the main background with the new image
-									styleElement.textContent = `
-										#bg:after {
-											background-image: url('${nextImage}') !important;
-										}
-									`;
+								// Small delay to ensure the image is set, then fade in
+								requestAnimationFrame(() => {
+									setTimeout(() => {
+										// Fade in the new image
+										styleElement.textContent = `
+											#bg:after {
+												background-image: url('${nextImage}') !important;
+												opacity: 1 !important;
+												transition: opacity 2.5s ease-in-out !important;
+											}
+										`;
 
-									// Reset transition element
-									transitionElement.style.opacity = '0';
-									transitionElement.style.backgroundImage = '';
+										// After fade in completes, reset and prepare for next transition
+										setTimeout(() => {
+											// Remove the transition styles to return to normal state
+											styleElement.textContent = `
+												#bg:after {
+													background-image: url('${nextImage}') !important;
+												}
+											`;
 
-									isTransitioning = false;
+											isTransitioning = false;
 
-									// Increment the index for next image
-									currentImageIndex = (currentImageIndex + 1) % slideshowImages.length;
-								}, 1500); // Wait for transition to complete
-							});
+											// Increment the index for next image
+											currentImageIndex = (currentImageIndex + 1) % slideshowImages.length;
+										}, 1500); // Wait for fade in to complete
+									}, 50); // Small delay to ensure DOM update
+								});
+							}, 1500); // Wait for fade out to complete
 						}
 
 						// Set initial background image
@@ -328,7 +332,7 @@
 
 						// Change the background image every 5 seconds, but only if there's more than one image
 						if (slideshowImages.length > 1) {
-							setInterval(changeBackgroundImage, 5000);
+							setInterval(changeBackgroundImage, 7000);
 						}
 					}
 
@@ -382,7 +386,7 @@
 
 						// Use the first image from the array
 						const imageSrc = imageArray[0];
-
+						console.log(imageArray)
 						// Create a new image to test if it loads
 						const testImg = new Image();
 
@@ -404,6 +408,23 @@
 						testImg.src = imageSrc;
 					}
 
+					// Load dynamic images for each section
+					// These arrays are loaded from the generated JavaScript files
+
+					// Load intro section image
+					if (typeof introImages !== 'undefined') {
+						loadDynamicImage(introImages, '#intro .image.main img', 'images/intro.jpg');
+					}
+
+					// Load work section image  
+					if (typeof workImages !== 'undefined') {
+						loadDynamicImage(workImages, '#work .image.main img', 'images/pic02.jpg');
+					}
+
+					// Load portfolio section image
+					if (typeof portfolioImages !== 'undefined') {
+						loadDynamicImage(portfolioImages, '#portfolio .image.main img', 'images/pic03.jpg');
+					}
 				});
 			</script>
 

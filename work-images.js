@@ -3,5 +3,4 @@
 
 const workImages = [
     'images/workImage/IMG_0834.jpg',
-    'images/workImage/newWorkImage.jpg',
 ];
